@@ -1,0 +1,50 @@
+- name: test
+  hosts: all
+  serial: 10
+  remote_user: root
+  tasks:
+      - name: apt install
+        ansible.builtin.apt:
+             name: curl
+             state: present
+             update_cache: yes
+      - name: ufw test
+        ufw:
+             state: enabled
+             rule: allow
+             proto: tcp
+             port: "{{ item }}"
+        with_items:
+                - 80
+                - 8080
+                - 1834
+                - 22 
+   
+      - name: test ssh conf
+        lineinfile: dest=/etc/ssh/sshd_config regexp='#Port 22' line='Port 1834'
+        lineinfile:   dest=/etc/ssh/sshd_config regexp='#PubkeyAuthentication yes' line='PubkeyAuthentication yes'
+      
+      - name: Users add
+        ansible.builtin.user:
+             name: "{{item.name}}"
+             shell: /bin/bash
+             password: "{{item.password}}"
+             state: present
+        with_items:
+              - {name: Webdeveloper, password: S52we9V6QTp7}
+              - {name: Devopsengineer, password: dHy6sKGHsj2T}
+              - {name: Projectmanager, password: oP92ugMSaCbe}           
+      
+      - name: troop
+        ansible.posix.authorized_key:
+             user: "{{items.user}}"
+             key: ~/.ssh/id_rsa.pub
+        with_items:
+           - {user: Webdeveloper}
+           - {user: Devopsengineer}
+           - {user: Projectmanager}
+           - {user: root} 
+
+          
+          
+                   
