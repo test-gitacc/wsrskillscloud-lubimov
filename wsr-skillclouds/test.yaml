@@ -5,7 +5,10 @@
   tasks:
       - name: apt install
         ansible.builtin.apt:
-             name: curl
+             name: 
+               - curl
+               - docker
+               - docker-compose
              state: present
              update_cache: yes
       - name: ufw test
@@ -35,16 +38,11 @@
               - {name: Devopsengineer, password: dHy6sKGHsj2T}
               - {name: Projectmanager, password: oP92ugMSaCbe}           
       
-      - name: troop
-        ansible.posix.authorized_key:
-             user: "{{items.user}}"
-             key: ~/.ssh/id_rsa.pub
-        with_items:
-           - {user: Webdeveloper}
-           - {user: Devopsengineer}
-           - {user: Projectmanager}
-           - {user: root} 
+      
+       
 
-          
+        
+        
+         
           
                    
